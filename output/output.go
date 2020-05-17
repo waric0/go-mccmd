@@ -1,6 +1,14 @@
 package output
 
-import uuid "github.com/google/uuid"
+import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+
+	uuid "github.com/google/uuid"
+)
 
 // Header : Structure definition for "header" in "manifest.json"
 type Header struct {
@@ -38,4 +46,54 @@ type Manifest struct {
 	Modules       Modules      `json:"modules"`
 	Dependencies  Dependencies `json:"dependencies"`
 	Metadata      Metadata     `json:"metadata"`
+}
+
+func makeDir(name string) error {
+	_, err := os.Stat(name)
+	if err != nil {
+		err = os.Mkdir(name, 0644)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func makeManifest(man *Manifest, path string) error {
+	b, err := json.Marshal(*man)
+	if err != nil {
+		return err
+	}
+	var buf bytes.Buffer
+	err = json.Indent(&buf, b, "", "	")
+	if err != nil {
+		return err
+	}
+	b = buf.Bytes()
+	name := filepath.Join(path, "manifest.json")
+	err = ioutil.WriteFile(name, b, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// MakeMCPack : Function to write a mcpack directory
+func MakeMCPack(man *Manifest, path string) error {
+	name := man.Header.Name
+	packDir := filepath.Join(path, name)
+	err := makeDir(packDir)
+	if err != nil {
+		return err
+	}
+	funcDir := filepath.Join(packDir, "functions")
+	err = makeDir(funcDir)
+	if err != nil {
+		return err
+	}
+	err = makeManifest(man, packDir)
+	if err != nil {
+		return err
+	}
+	return nil
 }
