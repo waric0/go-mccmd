@@ -3,9 +3,11 @@ package output
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	uuid "github.com/google/uuid"
 )
@@ -78,11 +80,32 @@ func makeManifest(man *Manifest, path string) error {
 	return nil
 }
 
+// GetMCPackName : Check and get mcpack directory name
+func GetMCPackName(man *Manifest) (string, error) {
+	name := man.Header.Name
+	symbols := []string{" ", "."}
+	if name == "" {
+		return "", errors.New("No mcpack directory name specified")
+	} else if strings.Contains(name, "/") || strings.Contains(name, "\\") {
+		return "", errors.New("Contains symbols that cannot be specified as mcpack directory names")
+	} else {
+		for _, v := range symbols {
+			if name[1:] == v || name[:1] == v {
+				return "", errors.New("A symbol is in a position that cannot be specified as an mcpack directory name")
+			}
+		}
+	}
+	return name, nil
+}
+
 // MakeMCPack : Function to write a mcpack directory
 func MakeMCPack(man *Manifest, path string) error {
-	name := man.Header.Name
+	name, err := GetMCPackName(man)
+	if err != nil {
+		return err
+	}
 	packDir := filepath.Join(path, name)
-	err := makeDir(packDir)
+	err = makeDir(packDir)
 	if err != nil {
 		return err
 	}
