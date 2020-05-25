@@ -35,4 +35,13 @@ func TestGetPosStr(t *testing.T) {
 			t.Fatal("Write result is different than expected")
 		}
 	}
+
+	input := Position{Type: "abs", Magnitude: [3]float64{0, 0, 0}}
+	output := "0 0 0"
+	resultOne := GetPosStr(&input)
+	resultTwo := GetPosStr(&input)
+	if resultOne == output && resultOne != resultTwo {
+		t.Fatal("Cannot handle reuse of the same instance")
+	}
+
 }

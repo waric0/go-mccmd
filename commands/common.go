@@ -11,18 +11,21 @@ type Position struct {
 
 // GetPosStr : Returns position in command format
 func GetPosStr(p *Position) string {
-	var str string
+	var (
+		str     string
+		posType string
+	)
 	if (*p == Position{}) {
 		return ""
 	}
-	if p.Type == "abs" {
-		p.Type = ""
+	if p.Type != "abs" {
+		posType = p.Type
 	}
 	for i, v := range p.Magnitude {
-		if p.Type != "" && v == 0 {
-			str += fmt.Sprintf("%s", p.Type)
+		if posType != "" && v == 0 {
+			str += fmt.Sprintf("%s", posType)
 		} else {
-			str += fmt.Sprintf("%s%g", p.Type, v)
+			str += fmt.Sprintf("%s%g", posType, v)
 		}
 		if i+1 != len(p.Magnitude) && str != "" {
 			str += " "
