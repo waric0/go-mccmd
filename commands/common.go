@@ -33,3 +33,38 @@ func GetPosStr(p *Position) string {
 	}
 	return str
 }
+
+// TargetSelector : Target selector Structure Definitions
+type TargetSelector struct {
+	Variable   string
+	EntityName string
+	EntityType string
+}
+
+// GetTargetSelector : Returns target selector in command format
+func GetTargetSelector(t *TargetSelector) string {
+	var (
+		str string
+		arg string
+	)
+	if (*t == TargetSelector{}) || t.Variable == "" {
+		return ""
+	}
+	str = fmt.Sprintf("%s", t.Variable)
+	if t.EntityName != "" {
+		if arg != "" {
+			arg += ","
+		}
+		arg += fmt.Sprintf("name=%s", t.EntityName)
+	}
+	if t.EntityType != "" {
+		if arg != "" {
+			arg += ","
+		}
+		arg += fmt.Sprintf("type=%s", t.EntityType)
+	}
+	if arg != "" {
+		str += "[" + arg + "]"
+	}
+	return str
+}

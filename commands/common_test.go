@@ -43,5 +43,27 @@ func TestGetPosStr(t *testing.T) {
 	if resultOne == output && resultOne != resultTwo {
 		t.Fatal("Cannot handle reuse of the same instance")
 	}
+}
 
+func TestGetTargetSelector(t *testing.T) {
+	inputs := []TargetSelector{
+		{},
+		{Variable: "@p"},
+		{Variable: "@e", EntityType: "armor_stand", EntityName: "test"},
+		{Variable: "@e", EntityType: "", EntityName: ""},
+		{EntityName: "test"},
+	}
+	outputs := []string{
+		"",
+		"@p",
+		"@e[name=test,type=armor_stand]",
+		"@e",
+		"",
+	}
+	for i := range inputs {
+		result := GetTargetSelector(&inputs[i])
+		if result != outputs[i] {
+			t.Fatal("Write result is different than expected")
+		}
+	}
 }
