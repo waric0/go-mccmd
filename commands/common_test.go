@@ -45,6 +45,49 @@ func TestGetPosStr(t *testing.T) {
 	}
 }
 
+func TestGetRotStr(t *testing.T) {
+	inputs := []Rotation{
+		{},
+		{Type: ""},
+		{Type: "abs"},
+		{Magnitude: [2]float64{0, 0}},
+		{Type: "abs", Magnitude: [2]float64{0, 0}},
+		{Magnitude: [2]float64{0.1, 0}},
+		{Type: "abs", Magnitude: [2]float64{0.1, 0}},
+		{Type: "~"},
+		{Type: "~", Magnitude: [2]float64{1, 1}},
+		{Type: "^", Magnitude: [2]float64{0, 1}},
+		{Type: "~", Magnitude: [2]float64{0.5}},
+	}
+	outputs := []string{
+		"",
+		"",
+		"0 0",
+		"",
+		"0 0",
+		"0.1 0",
+		"0.1 0",
+		"~ ~",
+		"~1 ~1",
+		"^ ^1",
+		"~0.5 ~",
+	}
+	for i := range inputs {
+		result := GetRotStr(&inputs[i])
+		if result != outputs[i] {
+			t.Fatal("Write result is different than expected")
+		}
+	}
+
+	input := Rotation{Type: "abs", Magnitude: [2]float64{0, 0}}
+	output := "0 0"
+	resultOne := GetRotStr(&input)
+	resultTwo := GetRotStr(&input)
+	if resultOne == output && resultOne != resultTwo {
+		t.Fatal("Cannot handle reuse of the same instance")
+	}
+}
+
 func TestGetTargetSelector(t *testing.T) {
 	inputs := []TargetSelector{
 		{},

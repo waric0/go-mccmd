@@ -34,6 +34,38 @@ func GetPosStr(p *Position) string {
 	return str
 }
 
+// Rotation : Rotation Structure Definitions
+////// Memo : You must explicitly set Type to 'abs' if you want to specify an absolute angle //////
+type Rotation struct {
+	Type      string
+	Magnitude [2]float64
+}
+
+// GetRotStr : Returns rotation in command format
+func GetRotStr(r *Rotation) string {
+	var (
+		str     string
+		rotType string
+	)
+	if (*r == Rotation{}) {
+		return ""
+	}
+	if r.Type != "abs" {
+		rotType = r.Type
+	}
+	for i, v := range r.Magnitude {
+		if rotType != "" && v == 0 {
+			str += fmt.Sprintf("%s", rotType)
+		} else {
+			str += fmt.Sprintf("%s%g", rotType, v)
+		}
+		if i+1 != len(r.Magnitude) && str != "" {
+			str += " "
+		}
+	}
+	return str
+}
+
 // TargetSelector : Target selector Structure Definitions
 type TargetSelector struct {
 	Variable   string
