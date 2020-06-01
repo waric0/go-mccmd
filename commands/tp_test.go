@@ -8,6 +8,12 @@ func TestWriteTp(t *testing.T) {
 		tp  Tp
 	)
 
+	tp = Tp{}
+	err := WriteTp(&tp, &str)
+	if err == nil {
+		t.Fatal("No error despite incorrect input")
+	}
+
 	str = "first-line\n"
 	tp = Tp{Victim: TargetSelector{Variable: "@p"}}
 	WriteTp(&tp, &str)
@@ -17,7 +23,6 @@ func TestWriteTp(t *testing.T) {
 
 	inputs := []Tp{
 		{Victim: TargetSelector{Variable: "@p"}},
-		{},
 		{Victim: TargetSelector{Variable: "@p"}, Destination: Position{Type: "~"}},
 		{Victim: TargetSelector{Variable: "@p"}, Destination: Position{Type: "~"}, XYrotation: Rotation{Type: "~"}},
 		{Victim: TargetSelector{Variable: "@p"}, XYrotation: Rotation{Type: "~"}},
@@ -25,7 +30,6 @@ func TestWriteTp(t *testing.T) {
 	}
 	outputs := []string{
 		"tp @p\n",
-		"tp\n",
 		"tp @p ~ ~ ~\n",
 		"tp @p ~ ~ ~ ~ ~\n",
 		"tp @p\n",
