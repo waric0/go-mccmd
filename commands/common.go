@@ -1,6 +1,9 @@
 package commands
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Position : Position Structure Definitions
 ////// Memo : You must explicitly set Type to 'abs' if you want to point to the origin of the world //////
@@ -99,4 +102,27 @@ func GetTargetSelector(t *TargetSelector) string {
 		str += "[" + arg + "]"
 	}
 	return str
+}
+
+// Command : structure definition of a collection of commands
+type Command struct {
+	Fill
+	Summon
+	Tp
+}
+
+// GetComStr : Returns the command string for indirect use
+func GetComStr(c *Command) string {
+	var str string
+	if (*c == Command{}) {
+		return ""
+	}
+	if (c.Fill != Fill{}) {
+		WriteFill(&c.Fill, &str)
+	} else if (c.Summon != Summon{}) {
+		WriteSummon(&c.Summon, &str)
+	} else if (c.Tp != Tp{}) {
+		WriteTp(&c.Tp, &str)
+	}
+	return strings.TrimRight(str, "\n")
 }
