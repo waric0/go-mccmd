@@ -110,3 +110,22 @@ func TestGetTargetSelector(t *testing.T) {
 		}
 	}
 }
+
+func TestGetComStr(t *testing.T) {
+	inputs := []Command{
+		{},
+		{Tp: Tp{Victim: TargetSelector{Variable: "@p"}}},
+		{Summon: Summon{EntityType: "lightning_bolt"}, Tp: Tp{Victim: TargetSelector{Variable: "@p"}}},
+	}
+	outputs := []string{
+		"",
+		"tp @p",
+		"summon lightning_bolt",
+	}
+	for i := range inputs {
+		result := GetComStr(&inputs[i])
+		if result != outputs[i] {
+			t.Fatal("Write result is different than expected")
+		}
+	}
+}
